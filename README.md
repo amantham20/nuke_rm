@@ -29,92 +29,31 @@
 
 ## Installation
 
-### Homebrew (macOS and Linux)
-
+### macOS (Apple Silicon)
 ```bash
-brew tap amantham20/tap
-brew install nuke
-```
-
-### Download Pre-built Binaries
-
-Download the latest release for your platform from the [Releases page](https://github.com/amantham20/nuke_rm/releases).
-
-#### macOS
-
-```bash
-# Intel Mac (x86_64)
-curl -LO https://github.com/amantham20/nuke_rm/releases/latest/download/nuke_darwin_x86_64.tar.gz
-tar -xzf nuke_darwin_x86_64.tar.gz
-sudo mv nuke /usr/local/bin/
-
-# Apple Silicon (ARM64)
-curl -LO https://github.com/amantham20/nuke_rm/releases/latest/download/nuke_darwin_arm64.tar.gz
-tar -xzf nuke_darwin_arm64.tar.gz
+curl -L https://github.com/amantham20/nuke_rm/releases/latest/download/nuke-darwin-arm64 -o nuke
+chmod +x nuke
 sudo mv nuke /usr/local/bin/
 ```
 
-#### Linux
-
-**Debian/Ubuntu (APT)**
+### macOS (Intel)
 ```bash
-# x86_64
-curl -LO https://github.com/amantham20/nuke_rm/releases/latest/download/nuke_linux_amd64.deb
-sudo dpkg -i nuke_linux_amd64.deb
-
-# ARM64
-curl -LO https://github.com/amantham20/nuke_rm/releases/latest/download/nuke_linux_arm64.deb
-sudo dpkg -i nuke_linux_arm64.deb
-```
-
-**Fedora/RHEL/CentOS (RPM)**
-```bash
-# x86_64
-curl -LO https://github.com/amantham20/nuke_rm/releases/latest/download/nuke_linux_amd64.rpm
-sudo rpm -i nuke_linux_amd64.rpm
-
-# ARM64
-curl -LO https://github.com/amantham20/nuke_rm/releases/latest/download/nuke_linux_arm64.rpm
-sudo rpm -i nuke_linux_arm64.rpm
-```
-
-**Arch Linux**
-```bash
-# x86_64
-curl -LO https://github.com/amantham20/nuke_rm/releases/latest/download/nuke_linux_amd64.pkg.tar.zst
-sudo pacman -U nuke_linux_amd64.pkg.tar.zst
-
-# ARM64
-curl -LO https://github.com/amantham20/nuke_rm/releases/latest/download/nuke_linux_arm64.pkg.tar.zst
-sudo pacman -U nuke_linux_arm64.pkg.tar.zst
-```
-
-**Alpine Linux (APK)**
-```bash
-# x86_64
-curl -LO https://github.com/amantham20/nuke_rm/releases/latest/download/nuke_linux_amd64.apk
-sudo apk add --allow-untrusted nuke_linux_amd64.apk
-
-# ARM64
-curl -LO https://github.com/amantham20/nuke_rm/releases/latest/download/nuke_linux_arm64.apk
-sudo apk add --allow-untrusted nuke_linux_arm64.apk
-```
-
-**Manual (Linux/FreeBSD)**
-```bash
-# Linux x86_64
-curl -LO https://github.com/amantham20/nuke_rm/releases/latest/download/nuke_linux_x86_64.tar.gz
-tar -xzf nuke_linux_x86_64.tar.gz
+curl -L https://github.com/amantham20/nuke_rm/releases/latest/download/nuke-darwin-amd64 -o nuke
+chmod +x nuke
 sudo mv nuke /usr/local/bin/
+```
 
-# Linux ARM64
-curl -LO https://github.com/amantham20/nuke_rm/releases/latest/download/nuke_linux_arm64.tar.gz
-tar -xzf nuke_linux_arm64.tar.gz
+### Linux (x86_64)
+```bash
+curl -L https://github.com/amantham20/nuke_rm/releases/latest/download/nuke-linux-amd64 -o nuke
+chmod +x nuke
 sudo mv nuke /usr/local/bin/
+```
 
-# Linux ARMv7 (Raspberry Pi)
-curl -LO https://github.com/amantham20/nuke_rm/releases/latest/download/nuke_linux_armv7.tar.gz
-tar -xzf nuke_linux_armv7.tar.gz
+### Linux (ARM64)
+```bash
+curl -L https://github.com/amantham20/nuke_rm/releases/latest/download/nuke-linux-arm64 -o nuke
+chmod +x nuke
 sudo mv nuke /usr/local/bin/
 ```
 

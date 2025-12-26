@@ -16,10 +16,37 @@ var (
 	date    = "unknown"
 )
 
+const banner = `
+nuke - A Safer rm Alternative %s
+
+         _ ._  _ , _ ._
+        (_   (    )_  .__)
+      ( (  (    )    )  ) _)
+     (__ (_(_ . _ )_)__)
+           |  |  |
+           |  |  |
+           |  |  |
+           \  |  /
+            \ | /
+             \|/
+              V  <-- (The Incoming Delivery)
+
+               	 __
+                / _)  - "Is it getting hot in here?"
+       _.----._/ /
+      /         /
+   __/ (  | (  |
+  /__.-'|_|--|_|
+
+Developed by Aman Dhruva Thamminana
+Feedback: thammina@msu.edu
+Contribute: https://github.com/amantham20/nuke_rm
+`
+
 func main() {
 	// Check for version flag
-	if len(os.Args) > 1 && (os.Args[1] == "--version" || os.Args[1] == "-V") {
-		fmt.Printf("nuke version %s\n", version)
+	if len(os.Args) > 1 && (os.Args[1] == "--version" || os.Args[1] == "-V" || os.Args[1] == "version") {
+		fmt.Printf(banner, version)
 		fmt.Printf("  commit: %s\n", commit)
 		fmt.Printf("  built:  %s\n", date)
 		return

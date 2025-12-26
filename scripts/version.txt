@@ -1,0 +1,10 @@
+AQS - Aman's Quick Search Tool 1.0.0
+
+            __
+           / _)
+    .-^^^-/ /
+ __/       /
+<__.|_|-|_|
+
+Developed by Aman Dhruva Thamminana
+Help me with feedback at thammina@msu.edu or contribute at https://github.com/amantham20/AQS
