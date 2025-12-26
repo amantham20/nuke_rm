@@ -1,0 +1,172 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+version: 2
+
+project_name: nuke
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: nuke
+    main: ./main.go
+    binary: nuke
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - freebsd
+    goarch:
+      - amd64
+      - arm64
+      - arm
+    goarm:
+      - "6"
+      - "7"
+    ignore:
+      - goos: darwin
+        goarch: arm
+      - goos: freebsd
+        goarch: arm
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.Date}}
+
+archives:
+  - id: default
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- .Version }}_
+      {{- .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - README.md
+      - LICENSE
+      - config.example.yaml
+      - systemd/*
+      - launchd/*
+      - scripts/*
+
+checksum:
+  name_template: 'checksums.txt'
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^chore:'
+      - Merge pull request
+      - Merge branch
+
+# Homebrew tap configuration
+brews:
+  - name: nuke
+    repository:
+      owner: amantham20
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    skip_upload: auto
+    directory: Formula
+    homepage: "https://github.com/amantham20/nuke_rm"
+    description: "A safer, faster, and more user-friendly alternative to rm"
+    license: "MIT"
+    install: |
+      bin.install "nuke"
+    test: |
+      system "#{bin}/nuke", "--help"
+
+# Linux packages
+nfpms:
+  - id: nuke
+    package_name: nuke
+    file_name_template: "{{ .PackageName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    vendor: amantham20
+    homepage: https://github.com/amantham20/nuke_rm
+    maintainer: amantham20
+    description: A safer, faster, and more user-friendly alternative to rm
+    license: MIT
+    formats:
+      - deb
+      - rpm
+      - apk
+      - archlinux
+    bindir: /usr/bin
+    contents:
+      - src: ./config.example.yaml
+        dst: /etc/nuke/config.example.yaml
+        type: config
+      - src: ./systemd/nuke-cleanup.service
+        dst: /usr/lib/systemd/system/nuke-cleanup.service
+      - src: ./systemd/nuke-cleanup.timer
+        dst: /usr/lib/systemd/system/nuke-cleanup.timer
+    scripts:
+      postinstall: scripts/postinstall.sh
+    overrides:
+      deb:
+        dependencies:
+          - libc6
+      rpm:
+        dependencies:
+          - glibc
+
+# Release configuration
+release:
+  github:
+    owner: amantham20
+    name: nuke_rm
+  draft: false
+  prerelease: auto
+  name_template: "{{.ProjectName}} v{{.Version}}"
+  footer: |
+    ## Installation
+
+    ### macOS (Homebrew)
+    ```bash
+    brew tap amantham20/tap
+    brew install nuke
+    ```
+
+    ### Debian/Ubuntu
+    ```bash
+    # Download the .deb file from above
+    sudo dpkg -i nuke_{{.Version}}_linux_amd64.deb
+    ```
+
+    ### Fedora/RHEL/CentOS
+    ```bash
+    # Download the .rpm file from above
+    sudo rpm -i nuke_{{.Version}}_linux_amd64.rpm
+    ```
+
+    ### Arch Linux
+    ```bash
+    # Download the .pkg.tar.zst file from above
+    sudo pacman -U nuke_{{.Version}}_linux_amd64.pkg.tar.zst
+    ```
+
+    ### Alpine Linux
+    ```bash
+    # Download the .apk file from above
+    sudo apk add --allow-untrusted nuke_{{.Version}}_linux_amd64.apk
+    ```
+
+    ### Manual Installation
+    ```bash
+    # Download the appropriate archive for your platform
+    tar -xzf nuke_{{.Version}}_<os>_<arch>.tar.gz
+    sudo mv nuke /usr/local/bin/
+    ```
