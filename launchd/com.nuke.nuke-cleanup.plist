@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.nuke.cleanup</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/local/bin/nuke</string>
+        <string>--cleanup-trash</string>
+    </array>
+
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>2</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>~/Library/Logs/nuke-cleanup.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>~/Library/Logs/nuke-cleanup.err.log</string>
+
+    <!-- Keep it from running before the user has logged in? Use LimitLoadToSessionType if desired -->
+    <key>RunAtLoad</key>
+    <true/>
+</dict>
+</plist>

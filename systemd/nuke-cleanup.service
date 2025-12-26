@@ -1,0 +1,12 @@
+[Unit]
+Description=nuke trash auto-cleanup
+After=network.target
+
+[Service]
+Type=oneshot
+# ExecStart should point to the installed `nuke` binary. If `nuke` is in PATH, the following is fine.
+# You may want to replace `/usr/bin/env nuke` with the full absolute path to avoid environment issues.
+ExecStart=/usr/bin/env nuke --cleanup-trash
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,28 @@
+# nuke Configuration File
+# Place this file at ~/.config/nuke/config.yaml
+
+# Additional paths to protect from deletion
+# These paths will be skipped even with -f flag
+protected_paths:
+  # Add your important directories here
+  # - "~/important_project"
+  # - "/data/backups"
+  # - "*.critical"
+
+# Trash retention policy
+# How long to keep files in trash before auto-delete (default: 30)
+trash_retention_days: 30
+
+# Maximum trash directory size in MB (default: 5000 = 5 GB)
+trash_max_size_mb: 5000
+
+# Enable automatic cleanup (default: true)
+auto_cleanup_enabled: true
+
+# Note: The following paths are protected by default:
+# - / (root)
+# - /bin, /sbin, /usr, /etc, /var, /lib, /boot
+# - /sys, /proc, /dev
+# - /System, /Library (macOS)
+# - ~/.ssh, ~/.gnupg, ~/.config
+# - .git/ directories

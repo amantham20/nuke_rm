@@ -1,0 +1,11 @@
+[Unit]
+Description=Run nuke trash cleanup daily
+
+[Timer]
+# Run once a day. You can adjust this (OnCalendar=weekly, daily, Mon *-*-* 02:00:00, etc.)
+OnCalendar=daily
+Persistent=true
+Unit=nuke-cleanup.service
+
+[Install]
+WantedBy=timers.target
