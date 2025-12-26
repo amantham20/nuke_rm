@@ -297,8 +297,6 @@ Notes:
 - `launchd` runs on macOS only. If `launchctl` load fails, run the installer manually or inspect the plist.
 - If the `nuke` binary isn't in `/usr/local/bin`, pass the full path with `--nuke-path` to the installer, or edit the plist directly.
 
-(earlier README content retained)
-
 ### Secure deletion of sensitive data
 ```bash
 nuke --shred -r sensitive_data/
