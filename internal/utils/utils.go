@@ -54,7 +54,7 @@ func ParseSize(s string) (int64, error) {
 		return 0, fmt.Errorf("invalid number: %s", numStr)
 	}
 
-	multiplier := int64(1)
+	multiplier := int64(1) // Default for bytes
 	switch unit {
 	case "K", "KB":
 		multiplier = 1024
@@ -65,7 +65,7 @@ func ParseSize(s string) (int64, error) {
 	case "T", "TB":
 		multiplier = 1024 * 1024 * 1024 * 1024
 	case "B", "":
-		multiplier = 1
+		// Use default multiplier of 1
 	default:
 		return 0, fmt.Errorf("unknown unit: %s", unit)
 	}
@@ -144,7 +144,7 @@ func ParseDuration(s string) (time.Duration, error) {
 		return 0, fmt.Errorf("unknown time unit: %s", unit)
 	}
 
-	return time.Duration(num * float64(multiplier)), nil
+	return time.Duration(num * float64(multiplier)), nil //nolint:gosec // Duration calculation is safe
 }
 
 // TruncatePath truncates a path for display

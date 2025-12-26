@@ -191,6 +191,7 @@ func parseArgs(args []string) ([]string, error) {
 		case strings.HasPrefix(arg, "--regex="):
 			regexPattern = strings.TrimPrefix(arg, "--regex=")
 		case strings.HasPrefix(arg, "--workers="):
+			//nolint:errcheck // Invalid worker count falls back to default
 			fmt.Sscanf(strings.TrimPrefix(arg, "--workers="), "%d", &workers)
 		case strings.HasPrefix(arg, "-"):
 			return nil, fmt.Errorf("unknown option: %s", arg)
@@ -501,6 +502,7 @@ func performDeletion(files []scanner.FileInfo, cfg *config.Config) error {
 
 	// Progress callback
 	onProgress := func(path string, err error) {
+		//nolint:errcheck // Progress bar errors are non-critical
 		bar.Add(1)
 		if err != nil {
 			errMu.Lock()

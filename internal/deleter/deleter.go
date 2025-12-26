@@ -121,6 +121,7 @@ func (d *Deleter) shredFile(file scanner.FileInfo) error {
 	if err != nil {
 		return err
 	}
+	defer func() { _ = f.Close() }()
 
 	// Get file size
 	size := file.Size
@@ -132,7 +133,6 @@ func (d *Deleter) shredFile(file scanner.FileInfo) error {
 	for pass := 0; pass < passes; pass++ {
 		// Seek to beginning
 		if _, err := f.Seek(0, 0); err != nil {
-			f.Close()
 			return err
 		}
 
@@ -145,6 +145,7 @@ func (d *Deleter) shredFile(file scanner.FileInfo) error {
 
 			// Fill buffer with random data (or zeros for alternating passes)
 			if pass%2 == 0 {
+				//nolint:errcheck // Best effort secure overwrite, partial random data is acceptable
 				rand.Read(buf[:toWrite])
 			} else {
 				for i := range buf[:toWrite] {
@@ -154,7 +155,6 @@ func (d *Deleter) shredFile(file scanner.FileInfo) error {
 
 			written, err := f.Write(buf[:toWrite])
 			if err != nil {
-				f.Close()
 				return err
 			}
 			remaining -= int64(written)
@@ -162,12 +162,9 @@ func (d *Deleter) shredFile(file scanner.FileInfo) error {
 
 		// Sync to ensure data is written to disk
 		if err := f.Sync(); err != nil {
-			f.Close()
 			return err
 		}
 	}
-
-	f.Close()
 
 	// Remove the file
 	return os.Remove(file.Path)

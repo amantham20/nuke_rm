@@ -25,16 +25,20 @@ type TrashEntry struct {
 	IsDir        bool      `json:"is_dir"`
 }
 
-// NewManager creates a new trash manager
+// NewManager creates a new trash manager using the default home directory
 func NewManager() (*Manager, error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		return nil, fmt.Errorf("failed to get home directory: %w", err)
 	}
+	return NewManagerAt(filepath.Join(homeDir, ".nuke-trash"))
+}
 
+// NewManagerAt creates a new trash manager at the specified base path
+func NewManagerAt(basePath string) (*Manager, error) {
 	// Create trash directories
-	trashDir := filepath.Join(homeDir, ".nuke-trash", "files")
-	metaDir := filepath.Join(homeDir, ".nuke-trash", "meta")
+	trashDir := filepath.Join(basePath, "files")
+	metaDir := filepath.Join(basePath, "meta")
 
 	if err := os.MkdirAll(trashDir, 0755); err != nil {
 		return nil, fmt.Errorf("failed to create trash directory: %w", err)
@@ -77,7 +81,7 @@ func (m *Manager) MoveToTrash(path string) error {
 		}
 		if err := os.RemoveAll(absPath); err != nil {
 			// Try to clean up the copy
-			os.RemoveAll(trashPath)
+			_ = os.RemoveAll(trashPath)
 			return fmt.Errorf("failed to remove original: %w", err)
 		}
 	}
@@ -153,11 +157,11 @@ func (m *Manager) Restore(filename string) error {
 				if err := copyPath(trashEntry.TrashPath, trashEntry.OriginalPath); err != nil {
 					return fmt.Errorf("failed to restore file: %w", err)
 				}
-				os.RemoveAll(trashEntry.TrashPath)
+				_ = os.RemoveAll(trashEntry.TrashPath)
 			}
 
 			// Remove metadata
-			os.Remove(metaPath)
+			_ = os.Remove(metaPath)
 
 			return nil
 		}
@@ -197,6 +201,7 @@ func (m *Manager) List() ([]TrashEntry, int64, error) {
 			if info.IsDir() {
 				// Calculate directory size
 				dirSize := int64(0)
+				//nolint:errcheck // Best effort size calculation, errors don't affect functionality
 				filepath.Walk(trashEntry.TrashPath, func(_ string, info os.FileInfo, _ error) error {
 					if info != nil && !info.IsDir() {
 						dirSize += info.Size()
@@ -269,7 +274,7 @@ func (m *Manager) AutoCleanup(retentionDays int, maxSizeMB int) (int, int64, err
 			}
 			// Remove metadata
 			metaPath := filepath.Join(m.metaDir, filepath.Base(entry.TrashPath)+".json")
-			os.Remove(metaPath)
+			_ = os.Remove(metaPath)
 		}
 	}
 
@@ -302,7 +307,7 @@ func (m *Manager) AutoCleanup(retentionDays int, maxSizeMB int) (int, int64, err
 
 			// Remove metadata
 			metaPath := filepath.Join(m.metaDir, filepath.Base(entry.TrashPath)+".json")
-			os.Remove(metaPath)
+			_ = os.Remove(metaPath)
 		}
 	}
 
