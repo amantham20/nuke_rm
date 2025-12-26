@@ -279,8 +279,8 @@ func scanTargets(targets []string, filterOpts *filter.Options, cfg *config.Confi
 				continue
 			}
 
-			// Check if path is protected
-			if cfg.IsProtected(absPath) {
+			// Check if path is protected (skip check if force flag is set)
+			if !force && cfg.IsProtected(absPath) {
 				fmt.Printf("⚠️  Skipping protected path: %s\n", absPath)
 				continue
 			}
@@ -487,10 +487,14 @@ func performDeletion(files []scanner.FileInfo, cfg *config.Config) error {
 		}),
 	)
 
-	// Create trash manager
-	trashMgr, err := trash.NewManager()
-	if err != nil {
-		return fmt.Errorf("failed to initialize trash: %w", err)
+	// Create trash manager (skip if NUKE_NO_TRASH=1 is set)
+	var trashMgr *trash.Manager
+	if os.Getenv("NUKE_NO_TRASH") != "1" {
+		var err error
+		trashMgr, err = trash.NewManager()
+		if err != nil {
+			return fmt.Errorf("failed to initialize trash: %w", err)
+		}
 	}
 
 	// Create deleter
@@ -532,7 +536,7 @@ func performDeletion(files []scanner.FileInfo, cfg *config.Config) error {
 		}
 	}
 
-	if !shred {
+	if !shred && os.Getenv("NUKE_NO_TRASH") != "1" {
 		fmt.Println("\n💡 Files moved to trash. Use --empty-trash to permanently delete.")
 		fmt.Printf("   Use --restore=<filename> to restore a file.\n")
 	}
@@ -667,7 +671,7 @@ DESCRIPTION:
 OPTIONS:
     -h, --help           Show this help message
     -r, --recursive      Delete directories recursively
-    -f, --force          Skip confirmation prompts
+    -f, --force          Skip confirmation prompts and protected path checks
     -i, --interactive    Ask for confirmation for each file
     -v, --verbose        Show detailed output
     --dry-run            Show what would be deleted without actually deleting
@@ -710,6 +714,9 @@ SAFETY FEATURES:
     - Confirmation required: Asks before deleting
     - Countdown timer: 5-second countdown for large operations (Ctrl+C to abort)
     - Soft delete: Files are moved to trash by default (use --shred to bypass)
+
+ENVIRONMENT VARIABLES:
+    NUKE_NO_TRASH=1      Permanently delete files instead of moving to trash
 
 PROTECTED PATHS:
     The following paths are protected by default:
